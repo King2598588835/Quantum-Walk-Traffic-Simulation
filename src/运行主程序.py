@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+"""
+Master Pipeline: 量子游走交通模拟全流程自动化调度
+"""
+import os
+import sys
+
+# --- 自动路径对齐逻辑 ---
+# 获取当前脚本所在目录 (src/) 的父目录 (项目根目录)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, 'src'))
+# 确保在根目录下运行，这样所有脚本内部的 'data/...' 相对路径都能生效
+os.chdir(BASE_DIR)
+
+# --- 导入各模块函数 ---
+try:
+    from Rg计算与分类 import run_step_1_rg_clustering
+    from 轨迹处理 import run_step_2_cleaning
+    from MSD局部扩散指数 import run_step_3_msd_analysis
+    from 密度分区计算 import run_step_4_grid_density
+    from 密度自动道路提取 import run_step_4_road_extraction
+    from 构建road_graph import run_step_5_topology_building
+    from 智能游走量子拟合 import run_quantum_solver
+except ImportError as e:
+    print(f"❌ 导入模块失败: {e}")
+    print("请确保所有脚本文件都在 src/ 目录下，且文件名与 import 语句一致。")
+    sys.exit(1)
+
+def run_full_pipeline(city):
+    """运行完整流水线"""
+    try:
+        print(f"\n{'='*50}")
+        print(f"🚀 开始全流程处理: {city}")
+        print(f"{'='*50}")
+        
+        # 1. 回转半径计算与聚类
+        run_step_1_rg_clustering(city)
+        # 2. 物理清洗与切分
+        run_step_2_cleaning(city)
+        # 3. 群体 MSD 与 Alpha 指数分析
+        run_step_3_msd_analysis(city)
+        # 4. 空间网格密度计算
+        run_step_4_grid_density(city)
+        # 5. 基于视觉算法的道路自动提取
+        run_step_4_road_extraction(city)
+        # 6. 路网矢量拓扑构建
+        run_step_5_topology_building(city)
+        # 7. 量子游走前向拟合与参数回归
+        run_quantum_solver(city)
+        
+        print(f"\n✨ {city} 全部流程处理成功！请在 data/ 目录下查看结果。")
+    except Exception as e:
+        print(f"\n❌ {city} 处理中断！")
+        print(f"错误位置: {e}")
+
+if __name__ == "__main__":
+    # --- 待处理城市列表 ---
+    cities_to_process = ["罗马数据"] 
+    
+    for city in cities_to_process:
+        run_full_pipeline(city)
+        
+    print("\n🎉 所有任务处理尝试结束。")
