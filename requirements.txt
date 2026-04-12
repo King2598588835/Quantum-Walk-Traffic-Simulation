@@ -1,0 +1,26 @@
+# 基础数据处理
+pandas
+numpy
+tqdm
+
+# 数学计算与信号处理
+scipy
+networkx
+
+# 机器学习与统计
+scikit-learn
+seaborn
+
+# 地理信息处理 (GIS)
+geopandas
+shapely
+pyproj
+geopy
+transbigdata
+mapclassify
+
+# 图像处理与路网提取 (Computer Vision)
+scikit-image
+
+# 可视化绘图
+matplotlib
