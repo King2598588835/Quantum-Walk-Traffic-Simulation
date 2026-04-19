@@ -91,11 +91,16 @@ def build_graph_for_cluster(cluster_id, topo_folder):
     """
     在指定的拓扑子文件夹中寻找 SHP
     """
-    edge_pattern = os.path.join(topo_folder, f"*{cluster_id}*路网.shp")
-    node_pattern = os.path.join(topo_folder, f"*{cluster_id}*路网节点.shp")
+    all_shps = glob.glob(os.path.join(topo_folder, "*.shp"))
     
-    edge_files = glob.glob(edge_pattern)
-    node_files = glob.glob(node_pattern)
+    # 2. 识别边文件 (包含 ClusterID 且 包含 "Edge" 或 "路网"，但不包含 "节点" 或 "Node")
+    edge_files = [f for f in all_shps if cluster_id.lower() in f.lower() 
+                  and ("edge" in f.lower() or "路网" in f) 
+                  and "node" not in f.lower() and "节点" not in f]
+    
+    # 3. 识别节点文件 (包含 ClusterID 且 包含 "Node" 或 "节点")
+    node_files = [f for f in all_shps if cluster_id.lower() in f.lower() 
+                  and ("node" in f.lower() or "节点" in f)]
     
     if not edge_files or not node_files:
         return None, None, None, None
@@ -271,13 +276,13 @@ def save_single_result(output_dir, time, y_real, a_real, y_fit, a_fit, gamma, st
     ax2.set_ylim(-0.2, 3.2)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f"{cluster_name}量子MSD变化以及扩散指数α图.png"), dpi=300)
+    plt.savefig(os.path.join(output_dir, f"{cluster_name}_Quantum_Fit_Result.png"), dpi=300)
     plt.close()
     
     # 2. CSV
     pd.DataFrame({
         'Time': time, 'Real_MSD': y_real, 'Real_Alpha': a_real, 'Fit_MSD': y_fit, 'Fit_Alpha': a_fit
-    }).to_csv(os.path.join(output_dir, f"{cluster_name}量子MSD变化以及扩散指数α图.csv"), index=False)
+    }).to_csv(os.path.join(output_dir, f"{cluster_name}_Quantum_Fit_Result.csv"), index=False)
 
 # ==============================================================================
 # 🎮 模块 5: 流程控制器 (The Manager)
@@ -395,8 +400,10 @@ def run_quantum_solver(dataset_name):
         # 创建输出目录
         os.makedirs(current_out_dir, exist_ok=True)
         
-        # 3. 遍历该文件夹下的 CSV (Cluster文件)
-        csv_files = glob.glob(os.path.join(current_real_dir, "*.csv"))
+        # 3. 遍历该文件夹下的 CSV (识别包含 Cluster 且包含 MSD 关键字的文件)
+        all_csvs = glob.glob(os.path.join(current_real_dir, "*.csv"))
+        csv_files = [f for f in all_csvs if "Cluster" in f and "MSD" in f]
+
         if not csv_files:
             print("   ⚠️ 该文件夹下没有CSV文件。")
             continue

@@ -61,17 +61,12 @@ def process_single_density_analysis(file_path, input_root, output_root):
     file_name = os.path.basename(file_path)
     file_base = os.path.splitext(file_name)[0]
     
-    # 提取Cluster名称 (逻辑不变)
-    if "Cluster" in file_base:
-        cluster_label = file_base.split("轨迹")[0]
-    elif "cluster_" in file_base:
-        match = re.search(r'cluster_(\d+)', file_base)
-        cluster_num = int(match.group(1)) + 1 if match else 1
-        cluster_label = f"Cluster{cluster_num}"
-    else:
-        cluster_label = "全量"
+    # --- 【修改处 1】提取简洁的 Cluster 标签 (如 Cluster1) ---
+    # 使用正则表达式提取 Cluster 及其数字，忽略大小写，不被 Trajectory 或 Cleaned 干扰
+    match = re.search(r'(Cluster\d+)', file_base, re.IGNORECASE)
+    cluster_label = match.group(1) if match else "Cluster"
 
-    # 确定输出目录
+    # 确定输出目录 (保持不变)
     rel_path = os.path.relpath(os.path.dirname(file_path), input_root)
     curr_output_dir = os.path.join(output_root, rel_path)
     os.makedirs(curr_output_dir, exist_ok=True)
@@ -89,7 +84,7 @@ def process_single_density_analysis(file_path, input_root, output_root):
     if df['lat'].abs().max() > 90 and df['lon'].abs().max() <= 90:
         df = df.rename(columns={'lat': 'lon', 'lon': 'lat'})
 
-    # 网格化计算
+    # 网格化计算 (保持不变)
     params = create_grid_params(df, ACCURACY)
     if not params: return
     df['LONCOL'], df['LATCOL'] = tbd.GPS_to_grid(df['lon'], df['lat'], params)
@@ -97,13 +92,13 @@ def process_single_density_analysis(file_path, input_root, output_root):
     grid_density = df.groupby(['LONCOL', 'LATCOL']).size().reset_index(name='count')
     if grid_density.empty: return
 
-    # 密度筛选逻辑
+    # 密度筛选逻辑 (保持不变)
     limit_val = grid_density['count'].quantile(DENSITY_THRESHOLD)
     high_density_grids = grid_density[grid_density['count'] >= limit_val]
     top_traj = df.merge(high_density_grids[['LONCOL', 'LATCOL']], on=['LONCOL', 'LATCOL'], how='inner')
     
-    # 保存结果
-    csv_save_name = f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution.csv"
+    # --- 【修改处 2】保存结果 (简化文件名) ---
+    csv_save_name = f"{cluster_label}_Spatial_Distribution.csv"
     top_traj.to_csv(os.path.join(curr_output_dir, csv_save_name), index=False, encoding='utf-8-sig')
 
     # 绘图逻辑 (保持不变)
@@ -117,24 +112,21 @@ def process_single_density_analysis(file_path, input_root, output_root):
         k=7, legend=True, edgecolor='none', alpha=0.9,
         legend_kwds={'loc': 'lower right', 'fmt': '{:.0f}'}
     )
-    ax.set_title(f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution ({ACCURACY}m网格)", fontsize=14)
+    # 标题也同步简化
+    ax.set_title(f"{cluster_label} Spatial Distribution ({ACCURACY}m Grid)", fontsize=14)
     ax.axis('off')
     
-    img_save_name = f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution_Map.png"
+    # 图表保存命名简化
+    img_save_name = f"{cluster_label}_Spatial_Distribution_Map.png"
     plt.savefig(os.path.join(curr_output_dir, img_save_name), bbox_inches='tight', dpi=300)
     plt.close(fig)
     return True
-
 # ------------------------------------------------------------------------------
 # 🚀 封装的调用接口
 # ------------------------------------------------------------------------------
 def run_step_4_grid_density(city_name):
-    """
-    一键运行指定city的网格密度分析
-    """
-    # 这里输入是 Step 2 的输出 (分类后的 CSV)
-    INPUT_ROOT = os.path.join('data', 'Classified_data', city_name)
-    # 输出到指定的Density_analysis_results目录
+
+    INPUT_ROOT = os.path.join('data', 'Cleaning_data_after_segmentation', city_name)
     OUTPUT_ROOT = os.path.join('data', 'Density_analysis_results', city_name)
     
     print(f"\n[Step 4] 空间密度分析启动 | city: {city_name}")
@@ -146,8 +138,8 @@ def run_step_4_grid_density(city_name):
     count = 0
     for root, _, files in os.walk(INPUT_ROOT):
         for file in files:
-            # 匹配逻辑：包含“Cluster”或“cluster_”的CSV文件，且排除已生成的分布文件
-            if file.endswith(".csv") and ("Cluster" in file or "cluster_" in file) and "空间分布" not in file:
+            # 2. 修改匹配逻辑：增加对 "Cleaned" 或 "Trajectory" 的识别
+            if file.endswith(".csv") and ("Cluster" in file or "cluster" in file.lower()) and ("Cleaned" in file or "Trajectory" in file):
                 if process_single_density_analysis(os.path.join(root, file), INPUT_ROOT, OUTPUT_ROOT):
                     count += 1
     

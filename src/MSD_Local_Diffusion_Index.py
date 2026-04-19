@@ -177,7 +177,7 @@ def run_step_3_msd_analysis(city_name):
     count = 0
     for root, _, files in os.walk(INPUT_FOLDER):
         for file in files:
-            if file.endswith(".csv") and "Cluster" in file and "处理数据" in file:
+            if file.endswith(".csv") and "Cluster" in file and ("Cleaned" in file or "Trajectory" in file):
                 rel_path = os.path.relpath(root, INPUT_FOLDER)
                 current_out = os.path.join(OUTPUT_FOLDER, rel_path)
                 os.makedirs(current_out, exist_ok=True)

@@ -85,7 +85,7 @@ def process_single_file(file_path, input_root, output_root):
     
     if not filename.endswith('.csv'): return
     if any(k in filename for k in ['汇总', '结果', '分布', '标签']): return
-    if '聚类' not in filename and 'cluster_' not in filename: return
+    if '聚类' not in filename.lower() and 'cluster' not in filename.lower(): return
 
     rel_path = os.path.relpath(file_path, input_root)
     rel_dir = os.path.dirname(rel_path)
@@ -128,7 +128,8 @@ def process_single_file(file_path, input_root, output_root):
     if not cleaned_segments: return
     
     final_df = pd.concat(cleaned_segments)
-    save_filename = f"{file_base.replace('轨迹数据', 'Trajectory_processing_data')}.csv" if "轨迹数据" in file_base else f"{file_base}_处理数据.csv"
+    clean_name = file_base.replace('轨迹数据', 'Trajectory').replace('trajectory_processing_data', 'Trajectory')
+    save_filename = f"{clean_name}_Cleaned.csv"
     save_path = os.path.join(target_output_dir, save_filename)
     
     cols_to_keep = ['id', 'time', 'lat', 'lon']
