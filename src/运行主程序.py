@@ -18,7 +18,6 @@ try:
     from 轨迹处理 import run_step_2_cleaning
     from MSD局部扩散指数 import run_step_3_msd_analysis
     from 密度分区计算 import run_step_4_grid_density
-    from 密度自动道路提取 import run_step_4_road_extraction
     from 构建road_graph import run_step_5_topology_building
     from 智能游走量子拟合 import run_quantum_solver
 except ImportError as e:
@@ -41,8 +40,8 @@ def run_full_pipeline(city):
         run_step_3_msd_analysis(city)
         # 4. 空间网格密度计算
         run_step_4_grid_density(city)
-        # 5. 基于视觉算法的道路自动提取
-        run_step_4_road_extraction(city)
+        # 5. 基于生成的空间密度构建路网
+
         # 6. 路网矢量拓扑构建
         run_step_5_topology_building(city)
         # 7. 量子游走前向拟合与参数回归
