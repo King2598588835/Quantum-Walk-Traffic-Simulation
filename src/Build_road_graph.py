@@ -50,10 +50,10 @@ def process_single_topology(file_path, input_root, output_root):
     filename = os.path.basename(file_path)
     file_base = os.path.splitext(filename)[0]
     
-    if "聚类" in file_base: cluster_label = file_base.split("路网")[0]
+    if "Cluster" in file_base: cluster_label = file_base.split("路网")[0]
     elif "cluster_" in file_base:
         match = re.search(r'cluster_(\d+)', file_base)
-        cluster_label = f"聚类{int(match.group(1))+1}"
+        cluster_label = f"Cluster{int(match.group(1))+1}"
     else: cluster_label = "全量"
 
     rel_path = os.path.relpath(os.path.dirname(file_path), input_root)

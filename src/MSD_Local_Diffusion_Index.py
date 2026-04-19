@@ -177,7 +177,7 @@ def run_step_3_msd_analysis(city_name):
     count = 0
     for root, _, files in os.walk(INPUT_FOLDER):
         for file in files:
-            if file.endswith(".csv") and "聚类" in file and "处理数据" in file:
+            if file.endswith(".csv") and "Cluster" in file and "处理数据" in file:
                 rel_path = os.path.relpath(root, INPUT_FOLDER)
                 current_out = os.path.join(OUTPUT_FOLDER, rel_path)
                 os.makedirs(current_out, exist_ok=True)
@@ -185,4 +185,4 @@ def run_step_3_msd_analysis(city_name):
                     count += 1
                     print(f"   ✅ 已完成: {file}")
 
-    print(f"🎉 {city_name} MSD分析全部完成，共处理 {count} 个聚类文件。")
+    print(f"🎉 {city_name} MSD分析全部完成，共处理 {count} 个Cluster文件。")

@@ -32,7 +32,7 @@ def run_full_pipeline(city):
         print(f"🚀 开始全流程处理: {city}")
         print(f"{'='*50}")
         
-        # 1. 回转半径计算与聚类
+        # 1. 回转半径计算与Cluster
         run_step_1_rg_clustering(city)
         # 2. 物理清洗与切分
         run_step_2_cleaning(city)

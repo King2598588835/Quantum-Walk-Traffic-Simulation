@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-科研轨迹数据处理万能版
+科研trajectory_processing_data处理万能版
 1. 支持Roman_data格式 (.txt, POINT坐标, mixed时间)
 2. 支持国内常见格式 (杭州、厦门、车牌号等 CSV)
 3. 包含轨迹预处理、去噪、轨迹简化 (DP算法)

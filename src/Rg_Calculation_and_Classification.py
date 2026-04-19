@@ -115,14 +115,14 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         
         plt.figure(figsize=(8, 5))
         plt.plot(k_range, inertias, 'bo-', linewidth=2)
-        plt.xlabel('聚类数量 k')
+        plt.xlabel('Cluster数量 k')
         plt.ylabel('簇内平方和 (Inertia)')
         plt.title(f'肘部法则 - {file_name}')
         plt.grid(True, alpha=0.3)
         plt.savefig(os.path.join(file_output_folder, "Elbow_Rule_Analysis_Diagram.png"), dpi=150, bbox_inches='tight')
         plt.close()
         
-        # 5. 执行聚类 (K-means 逻辑不变)
+        # 5. 执行Cluster (K-means 逻辑不变)
         kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
         rg_df['cluster'] = kmeans.fit_predict(X_scaled)
         
@@ -133,7 +133,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         
         rg_df.to_csv(os.path.join(file_output_folder, "Cluster_label_results.csv"), index=False, encoding='utf-8-sig')
         
-        # 6. 拆分并保存轨迹数据 (中文文件名)
+        # 6. 拆分并保存trajectory_processing_data (中文文件名)
         data_with_cluster = data.merge(rg_df[['id', 'cluster_ordered']], on='id', how='left')
         data_with_cluster.rename(columns={'cluster_ordered': 'cluster'}, inplace=True)
         data_with_cluster.dropna(subset=['cluster'], inplace=True)
@@ -141,7 +141,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         
         for i in range(k):
             sub_data = data_with_cluster[data_with_cluster['cluster'] == i].drop(columns=['cluster'])
-            save_p = os.path.join(file_output_folder, f"聚类{i+1}轨迹数据.csv")
+            save_p = os.path.join(file_output_folder, f"Cluster{i+1}_trajectory_processing_data.csv")
             if not sub_data.empty:
                 sub_data.to_csv(save_p, index=False, encoding='utf-8-sig')
         
@@ -165,7 +165,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
 # -------------------------------
 def run_step_1_rg_clustering(city_name):
     """
-    一键运行指定city的回转半径计算与聚类
+    一键运行指定city的回转半径计算与Cluster
     """
     INPUT_FOLDER = os.path.join('data', 'AfterProcessing', city_name)
     OUTPUT_FOLDER = os.path.join('data', 'Classified_data', city_name)
@@ -180,4 +180,4 @@ def run_step_1_rg_clustering(city_name):
         for f in csv_files:
             process_file_for_rg_clustering(f, OUTPUT_FOLDER, k=3)
     
-    print(f"🎉 {city_name} 回转半径聚类处理完成！")
+    print(f"🎉 {city_name} 回转半径Cluster处理完成！")

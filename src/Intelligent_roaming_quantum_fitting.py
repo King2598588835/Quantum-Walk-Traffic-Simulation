@@ -43,7 +43,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 def extract_cluster_id(filename):
     """从文件名提取 'Cluster_1' """
-    match = re.search(r'(聚类\d+)', filename)
+    match = re.search(r'(Cluster\d+)', filename)
     return match.group(1) if match else None
 
 def compute_alpha(msd, t, window_length=7, polyorder=2):
@@ -284,7 +284,7 @@ def save_single_result(output_dir, time, y_real, a_real, y_fit, a_fit, gamma, st
 # ==============================================================================
 
 def process_single_cluster(csv_file, topo_folder, output_folder):
-    """处理单个聚类文件"""
+    """处理单个Cluster文件"""
     filename = os.path.basename(csv_file)
     cluster_id = extract_cluster_id(filename)
     if not cluster_id: return None
@@ -395,13 +395,13 @@ def run_quantum_solver(dataset_name):
         # 创建输出目录
         os.makedirs(current_out_dir, exist_ok=True)
         
-        # 3. 遍历该文件夹下的 CSV (聚类文件)
+        # 3. 遍历该文件夹下的 CSV (Cluster文件)
         csv_files = glob.glob(os.path.join(current_real_dir, "*.csv"))
         if not csv_files:
             print("   ⚠️ 该文件夹下没有CSV文件。")
             continue
             
-        print(f"   📊 发现 {len(csv_files)} 个聚类文件，开始处理...")
+        print(f"   📊 发现 {len(csv_files)} 个Cluster文件，开始处理...")
         
         # 进度条处理
         success_count = 0
@@ -421,4 +421,4 @@ def run_quantum_solver(dataset_name):
                 # traceback.print_exc()
                 print(f"\n   ❌ 处理 {os.path.basename(f)} 时出错: {e}")
                 
-        print(f"   ✅ 完成！成功处理 {success_count} 个聚类。")
+        print(f"   ✅ 完成！成功处理 {success_count} 个Cluster。")

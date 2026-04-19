@@ -105,7 +105,7 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
   * MAX\_TIME\_GAP\_MIN = 30：If there is no displacement for more than 30 minutes, a new trajectory will be created.
   * MIN\_POINTS = 5：Ensure that each sample for analysis has sufficient statistical significance.
 * ​**import**​：data/Classified_data/ Various scale trajectory CSV files under the directory.
-* ​**output**​：在 data/Cleaning_data_after_segmentation/ Generate a refined dataset with the same name in the directory, and the file name will be automatically changed to \*\_Trajectory_processing数据.csv。
+* ​**output**​：在 data/Cleaning_data_after_segmentation/ Generate a refined dataset with the same name in the directory, and the file name will be automatically changed to \*\_Trajectory_processing_data.csv。
 
 ### Step 6: src/MSD_Local_Diffusion_Index.py
 
@@ -182,7 +182,7 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
     ，Ensure that the simulation process is not only aligned in terms of the rate of spatial expansion, but also physically consistent with the real traffic flow in terms of the diffusion phase transition behavior.
 #### ⚛️ Quantum simulation is compared with real data to display α(t)
 
-对齐验证
+Alignment verification
 
 |![alt text](results/grouping_situation/Cluster_1/Cluster1_quantum_MSD_changes_and_diffusion_index_α_graph.png)| (Note: The dotted lines represent the quantum simulation results, and the dots represent the observed data.) |
 | - | - |

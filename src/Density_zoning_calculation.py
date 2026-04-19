@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Step 4: Grid Density Analysis & Visualization (模块化调用版)
-输入：Step 2 分类后的聚类数据
+输入：Step 2 分类后的Cluster数据
 输出：网格密度分布 CSV 与 可视化图
 """
 import pandas as pd
@@ -61,13 +61,13 @@ def process_single_density_analysis(file_path, input_root, output_root):
     file_name = os.path.basename(file_path)
     file_base = os.path.splitext(file_name)[0]
     
-    # 提取聚类名称 (逻辑不变)
-    if "聚类" in file_base:
+    # 提取Cluster名称 (逻辑不变)
+    if "Cluster" in file_base:
         cluster_label = file_base.split("轨迹")[0]
     elif "cluster_" in file_base:
         match = re.search(r'cluster_(\d+)', file_base)
         cluster_num = int(match.group(1)) + 1 if match else 1
-        cluster_label = f"聚类{cluster_num}"
+        cluster_label = f"Cluster{cluster_num}"
     else:
         cluster_label = "全量"
 
@@ -146,8 +146,8 @@ def run_step_4_grid_density(city_name):
     count = 0
     for root, _, files in os.walk(INPUT_ROOT):
         for file in files:
-            # 匹配逻辑：包含“聚类”或“cluster_”的CSV文件，且排除已生成的分布文件
-            if file.endswith(".csv") and ("聚类" in file or "cluster_" in file) and "空间分布" not in file:
+            # 匹配逻辑：包含“Cluster”或“cluster_”的CSV文件，且排除已生成的分布文件
+            if file.endswith(".csv") and ("Cluster" in file or "cluster_" in file) and "空间分布" not in file:
                 if process_single_density_analysis(os.path.join(root, file), INPUT_ROOT, OUTPUT_ROOT):
                     count += 1
     
