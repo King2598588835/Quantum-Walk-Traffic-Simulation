@@ -1,240 +1,235 @@
-# 量子游走交通模拟 (Quantum Walk Traffic Simulation)
-
+# Quantum Walk Traffic Simulation
 [![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-本项目是一个用于**量子游走算法在城市交通流模拟中应用**的自动化数据处理与分析工作流。通过模块化的设计，将复杂的量子态演化、拓扑网络映射及结果分析拆分为独立可追溯的任务步骤。
+This project is an automated data processing and analysis workflow for the application of quantum walk algorithms in urban traffic flow simulation. Through a modular design, the complex quantum state evolution, topological network mapping, and result analysis are decomposed into independent and traceable task steps.
 
-## 📂 目录结构说明
+## 📂 Directory Structure Explanation
 
 ```text
-├── data/               # 原始数据（如路网拓扑、初始流量分布等）
-├── results/            # 存放处理后的结果、图表（如概率分布图、收敛曲线）
-├── src/                # 核心处理脚本
-├── README.md           # 项目使用说明文档
-└── requirements.txt    # 依赖库列表
+├── data/               # Original data (such as road network topology, initial flow distribution, etc.)
+├── results/            # Store the processed results and charts (such as probability distribution graphs, convergence curves)
+├── src/                # Core processing script
+├── README.md           # Project User Manual
+└── requirements.txt    # List of Dependent Libraries
 ```
 
 ---
 
-## 🛠 功能特性
+## 🛠 functional characteristics
 
-* ​**模块化设计**​：每一步处理逻辑独立，支持从中间步骤开始运行。
-* ​**自动化流转**​：自动读取 data/ 输入，阶梯式生成中间变量并存储于 results/。
-* ​**科研级绘图**​：内置基于 Matplotlib/Seaborn 的可视化脚本，直接生成符合论文标准的图表。
-
+* ​**building block design**​：Each processing step is logically independent and supports starting the operation from any intermediate step.
+* ​**Automated workflow**​：Automatically read the data from "data/" and generate intermediate variables in a stepwise manner, then store them in "results/".
+* ​**Research-grade drawing**​：Built-in visualization scripts based on Matplotlib/Seaborn, which directly generate charts that meet the standards of academic papers.
 ---
 
-## 🚀 数据处理流程
+## 🚀 Data processing procedure
 
-请按顺序运行 src/ 中的脚本以完成全流程分析：
+Please run the scripts in the src/ directory in sequence to complete the entire analysis process:
 
 ### Step 1: src/轨迹预处理与简化.py
 
-* ​**功能**​：​**多源轨迹数据标准化与压缩清洗**​。
+* ​**function**​：​**Standardization and Compression Cleaning of Multi-source Trajectory Data**​。
   
-  * ​**智能解析**​：自动识别罗马数据（TXT/POINT 格式）及国内主流 CSV 轨迹格式，统一字段为 [id, time, lon, lat]。
-  * ​**清洗去噪**​：利用 transbigdata 工具包剔除经纬度漂移点、异常速度点及冗余重复记录。
-  * ​**轨迹简化**​：集成 ​**Douglas-Peucker (DP) 算法**​，在保留轨迹几何特征的前提下大幅降低数据维度。
-  * ​**规范化输出**​：自动过滤长度不足 5 个点的无效轨迹，并对 ID 进行连续重编号，为后续量子游走模拟准备高质量输入。
-* ​**输入**​：data/原始数据/ 目录下的原始 TXT 或 CSV 文件。
-* ​**输出**​：data/原始数据处理后/ 目录下的规范化 \*\_cleaned.csv 文件。
+  * ​**Intelligent Parsing**​：Automatically recognize Roman data (in TXT/POINT format) and the mainstream CSV tracking format in China, with the unified fields being [id, time, lon, lat].
+  * ​**Cleaning and noise reduction**​：Using the transbigdata toolkit, we removed the points with drifting latitude and longitude, abnormal speed values, and redundant duplicate records.
+  * ​**Trajectory simplification**​：Integrating the **Douglas-Peucker (DP) algorithm**, it significantly reduces the data dimension while preserving the geometric features of the trajectory.
+  * ​**Standardized output**​：Automatically filter out invalid trajectories that are shorter than 5 points, and consecutively renumber the IDs to prepare high-quality input for the subsequent quantum walk simulation.
+* ​**import**​：The original TXT or CSV files located in the "data/Original Data/" directory.
+* ​**output**​：The normalized \*\_cleaned.csv file located in the "data" directory after the original data has been processed.
 
 ### Step 2: src/总体数据统计.py
 
-* ​**功能**​：​**高级去噪、轨迹分割与时空特征提取**​。
+* ​**function**​：​**Advanced noise reduction, trajectory segmentation and temporal-spatial feature extraction**​。
   
-  * ​**自动范围锁定 (Auto-BBox)​**​：基于分位数算法自动识别并锁定城市地理范围，精准剔除跨城市或坐标异常（如 0,0）的噪点。
-  * ​**动力学去噪**​：设定物理速度上限（150km/h），通过向量化位移计算过滤瞬移、跳点等非逻辑轨迹。
-  * ​**逻辑分割与平滑**​：针对长时间停留数据进行轨迹切分，并应用滑动窗口算法（Rolling Mean）平滑定位误差，消除信号抖动。
-  * ​**时长与点数过滤**​：自动剔除异常长（超过 3 小时）或记录点过稀疏的轨迹，确保建模数据的连贯性。
-* ​**输入**​：data/原始数据处理后/ 目录下的清洗后 CSV。
-* ​**输出**​：data/总体数据统计/ 目录下的高质量科研级轨迹数据。
+  * ​**Automatic range locking **​：Based on the quantile algorithm, the geographical scope of the city is automatically identified and locked, and outliers such as those across cities or with abnormal coordinates (such as 0,0) are precisely eliminated.
+  * ​**Dynamical denoising**​：Set a physical speed limit (150 km/h), and filter out non-logical trajectories such as teleportation and waypoints by using vectorized displacement calculations.
+  * ​**Logical segmentation and smoothing**​：The trajectories of the data with long-term persistence are segmented, and the sliding window algorithm (Rolling Mean) is applied to smooth out the positioning errors and eliminate signal jitter.
+  * ​**Duration and point count filtering**​：Automatically eliminate trajectories that are exceptionally long (exceeding 3 hours) or have too sparse recording points, to ensure the continuity of the modeling data.
+* ​**import**​：data/原始数据处理后/ The cleaned CSV file under the directory。
+* ​**output**​：data/总体数据统计/ High-quality research-grade trajectory data under the directory。
 
 ### Step 3: src/总体统计绘制.py
 
-* ​**功能**​：​**多维时空统计分析与扩散相变可视化**​。
+* ​**function**​：​**Multidimensional Time-Space Statistical Analysis and Visualization of Diffusion Phase Transition**​。
   
-  * **​基础分布统计 (四合一)**：自动提取并绘制轨迹的总位移、总时长、单次飞行长度（Flight Length）及瞬时速度的概率分布图，通过分位数算法剔除离群值，直观展现城市交通流的基础特征。
-  * ​**MSD 均方位移分析**​：计算不同时间步（Δt）下的均方位移（Mean Squared Displacement），揭示个体的空间扩散速率。
-  * **扩散相变指数提取**：利用 Savitzky-Golay 滤波器平滑对数曲线并计算梯度，动态识别轨迹处于“亚扩散”、“正常扩散”还是“超扩散”状态。
-  * ​**严格截断机制**​：内置“触底反弹”与“零点截断”逻辑，自动识别并舍弃物理意义失效的数据区间，确保扩散特征分析的科研严谨性。
-* ​**输入**​：data/总体数据统计/ 目录下的清洗后 CSV 文件。
-* ​**输出**​：在 data/总体数据统计/ 下为每个文件生成同名专属文件夹，包含：
+  * **Basic Distribution Statistics **：Automatically extract and draw probability distribution graphs of the total displacement, total duration, single flight length (Flight Length), and instantaneous speed of the trajectory. Use the quantile algorithm to eliminate outliers, and visually present the basic characteristics of urban traffic flow.
+  * ​**MSD omnidirectional displacement analysis**​：Calculate the mean squared displacement (Mean Squared Displacement) at different time steps (Δt), and reveal the spatial diffusion rate of the individual.
+  * **Extraction of diffusion phase transition index**：Using the Savitzky-Golay filter to smooth the logarithmic curve and calculate the gradient, dynamically identify whether the trajectory is in the "sub-diffusion", "normal diffusion" or "super-diffusion" state.
+  * ​**Strict truncation mechanism**​：It incorporates the "bottom rebound" and "zero-point truncation" logic, automatically identifying and discarding data intervals with invalid physical meanings, ensuring the scientific rigor of the diffusion feature analysis.
+* ​**import**​：data/总体数据统计/ The cleaned CSV files under the directory.
+* ​**output**​：在 data/总体数据统计/ The following creates a folder with the same name for each file, which contains:
   
-  * \*\_基础分布统计.png：宏观统计四合一图表。
-  * \*\_扩散相变分析.png：MSD 与α指数演化图。
-  * \*\_msd\_result\_full.csv & \*\_vis.csv：完整的扩散分析原始数据与截断后数据。
+  * \*\_基础分布统计.png：Macro-statistics Four-in-One Chart.
+  * \*\_扩散相变分析.png：MSD and α index evolution diagram.
+  * \*\_msd\_result\_full.csv & \*\_vis.csv：The complete original data for diffusion analysis and the truncated data.
 
-#### 📊 结果展示 (以罗马数据为例)
+#### 📊 results display (Take the data from Rome as an example)
 
-| 基础分布统计图                                      | 扩散相变分析图                                       |
+| Basic Distribution Chart                                      | Diffusion phase transformation analysis diagram                                       |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
 | ![alt text](results/整体情况/基本统计情况图.png) | ![alt text](results/整体情况/整体轨迹的MSD变化以及扩散指数α图.png)|
 
 ### Step 4: src/Rg计算与分类.py
 
-* ​**功能**​：**个体移动性度量与多尺度分类（回转半径 Rg 分析）**。
+* ​**function**​：**Individual mobility measurement and multi-scale classification (analysis of turning radius Rg)**。
   
-  * ​**回转半径计算**​：利用大圆航线算法（Geodesic distance）计算每条轨迹相对于其质心的回转半径Rg​，作为衡量个体空间活动范围的核心指标。
-  * ​**自适应聚类分析**​：集成 **K-means 聚类**与​**肘部法则（Elbow Method）**​，自动确定最佳分类数，将海量轨迹按空间扩张能力划分为不同能级（如：小尺度、中尺度、大尺度）。
-  * ​**逻辑重排序**​：通过对聚类标签进行均值映射，确保分类结果具备物理意义（例如：Label 1 始终对应Rg​最小的短距离活动群体）。
-  * ​**多层级数据拆分**​：自动生成分类后的子数据集，为后续研究不同移动性群体的量子游走特性提供样本支持。
+  * ​**Calculation of turning radius**​：Using the geodesic distance algorithm, the rotation radius Rg​ of each trajectory relative to its centroid is calculated, which serves as the core indicator for measuring the individual's spatial activity range.
+  * ​**Adaptive clustering analysis**​：Integrate **K-means clustering** with **the Elbow Method**.Automatically determine the optimal number of classifications, and divide the massive trajectories into different energy levels based on their spatial expansion capabilities (such as: small scale, medium scale, and large scale).
+  * ​**Logical reordering**​：By performing mean mapping on the clustering labels, it is ensured that the classification results have physical significance (for example: Label 1 always corresponds to the short-distance activity group with the smallest Rg value).
+  * ​**Multi-level data splitting**​：Automatically generate sub-data sets after classification, providing sample support for subsequent studies on the quantum walk characteristics of different mobility groups.
 
-#### 📊 结果展示 (以罗马数据为例)
+#### 📊 results display (Take the data from Rome as an example)
 
-| 肘部法则分析 (确定 K 值)                                        | 回转半径分布 (分类结果)                                         |
+| Elbow rule analysis (determining the K value)                                        | Radius of curvature distribution (classification result)                                         |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
 | ![alt text](results/肘部法则分析图.png)| ![alt text](results/回转半径分布图.png) |
 
-* ​**输入**​：data/原始数据处理后/ 目录下的清洗后轨迹 CSV。
-* ​**输出**​：在 data/分类后数据/ 目录下生成：
+* ​**import**​：data/原始数据处理后/ The cleaned trajectory CSV file under the directory.
+* ​**output**​：在 data/分类后数据/ Generated under the directory:
   
-  * 聚类[1,2,3]轨迹数据.csv：按移动尺度拆分后的独立数据集。
-  * 回转半径汇总.csv & 聚类标签结果.csv：详细的统计与分类标签对应表。
+  * Cluster [1,2,3] Trajectory Data.csv: Independent datasets after splitting by movement scale.
+  * 回转半径汇总.csv & 聚类标签结果.csv：Detailed statistical and classification label correspondence table.
 
 ### Step 5: src/轨迹处理.py
 
-* ​**功能**​：​**多尺度子集的二次物理精校与动态切分**​。
+* ​**function**​：​**Second-order physical fine-tuning and dynamic segmentation of multi-scale subsets**​。
   
-  * ​**分类细化清洗**​：针对 Step 4 分类后的“小/中/大”尺度数据集，进行针对性的物理逻辑校验。
-  * ​**动态时间切分**​：设定 30 分钟为阈值，自动识别并切分轨迹中的长时间停驻点，将单一长轨迹拆分为具有连续运动特征的“子轨迹段”，以满足量子游走平稳过程的假设。
-  * ​**动力学平滑**​：应用滑动窗口平滑算法（Smoothing）修正 GPS 定位抖动，提升轨迹的几何质量。
-  * ​**递归结构保持**​：自动遍历 data/分类后数据/ 下的所有城市子文件夹，并保持原有的分类目录结构，实现全自动批量化处理。
-* ​**关键参数**​：
+  * ​**Detailed classification and cleaning**​：For the "small/middle/large" scale datasets classified in Step 4, conduct targeted physical logic verification.
+  * ​**Dynamic time segmentation**​：Set the threshold at 30 minutes. Automatically identify and segment the long-stationary points in the trajectory, and split a single long trajectory into "sub-trajectory segments" with continuous movement characteristics, in order to meet the assumption of the stable process of quantum walking.
+  * ​**Dynamics smoothing**​：Apply the sliding window smoothing algorithm to correct GPS positioning jitter and improve the geometric quality of the trajectory.
+  * ​**Recursive structure preservation**​：Automatic traversal data/分类后数据/ Navigate through all the city subfolders and maintain the original classification directory structure, achieving fully automatic batch processing.
+* ​**key parameter**​：
   
-  * MAX\_SPEED\_KMH = 150：剔除超物理常识的瞬移点。
-  * MAX\_TIME\_GAP\_MIN = 30：超过 30 分钟无位移则切分为新轨迹。
-  * MIN\_POINTS = 5：确保每一段分析样本具有足够的统计意义。
-* ​**输入**​：data/分类后数据/ 目录下的各类尺度轨迹 CSV。
-* ​**输出**​：在 data/清洗分割后数据/ 目录下生成同名的精修数据集，文件名自动变更为 \*\_轨迹处理数据.csv。
+  * MAX\_SPEED\_KMH = 150：Eliminate the instantaneous movement points that are beyond the realm of physical common sense.
+  * MAX\_TIME\_GAP\_MIN = 30：If there is no displacement for more than 30 minutes, a new trajectory will be created.
+  * MIN\_POINTS = 5：Ensure that each sample for analysis has sufficient statistical significance.
+* ​**import**​：data/分类后数据/ Various scale trajectory CSV files under the directory.
+* ​**output**​：在 data/清洗分割后数据/ Generate a refined dataset with the same name in the directory, and the file name will be automatically changed to \*\_轨迹处理数据.csv。
 
 ### Step 6: src/MSD局部扩散指数.py
 
-* ​**功能**​：**群体性扩散特征建模与局部α指数解析**。
+* ​**function**​：**Modeling of collective diffusion characteristics and analysis of local α-index**。
   
-  * ​**群体 MSD 演化**​：在分类后的子集（小/中/大尺度）中，计算群体平均的均方位移（Ensemble MSD），揭示不同群体随时间推移的空间扩张规律。
-  * ​**局部扩散指数提取**​：利用 Savitzky-Golay 滤波器对对数 MSD 曲线进行平滑处理，并提取时间维度的导数α(t)，动态识别交通流在不同时间阶段的物理属性（如：从超扩散向亚扩散的转变）。
-  * ​**幂律拟合（Power-law Fit）**：在双对数坐标系下执行线性回归，自动计算全局比例系数与 R2 拟合优度。
-  * ​**统计截断保护**​：内置 REBOUND\_THRESHOLD 截断逻辑，当数据样本量由于时间跨度过大而变得稀疏、导致α指数发生非物理性反弹时，自动进行截断以确保结论的科学性。
+  * ​**Group MSD evolution**​：Within the subsets classified as small/middle/large scales, the ensemble mean displacement (Ensemble MSD) was calculated to reveal the spatial expansion patterns of different groups over time.
+  * ​**Local diffusion index extraction**​：The logarithmic MSD curve was smoothed using the Savitzky-Golay filter, and the time dimension derivative α(t) was extracted to dynamically identify the physical properties of the traffic flow at different time stages (such as the transition from super-diffusion to sub-diffusion).
+  * ​**Power-law Fit**：Perform linear regression in the double-logarithmic coordinate system, and automatically calculate the global proportion coefficient and the R2 goodness-of-fit.
+  * ​**Statistical truncation protection**​：built-in REBOUND\_THRESHOLD Truncate the logic. When the data sample size becomes sparse due to the large time span, causing the α index to exhibit an abnormal rebound, automatic truncation will be carried out to ensure the scientific nature of the conclusion.
 
-#### 📊 扩散特征结果展示( α(t)指数演化 )
+#### 📊 Display of diffusion characteristics results( α(t)Exponential evolution )
 
 ![alt text](results/分组情况/聚类1/聚类1轨迹的MSD变化以及扩散指数α以及量子模拟结果.png)
 
-* ​**输入**​：data/清洗分割后数据/ 目录下的精修轨迹数据。
-* ​**输出**​：在 data/群体 msd 分析结果/ 目录下为每个聚类生成：
+* ​**import**​：data/清洗分割后数据/ The refined trajectory data under the directory.
+* ​**output**​：in data/群体 msd 分析结果/ The contents below are for generating a separate file for each cluster.
   
-  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.csv：包含时间间隔、MSD 均值、Alpha 值的结构化数据。
-  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.png：包含 MSD 拟合曲线与α演化轨迹的双子图。
+  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.csv：Structured data including time intervals, mean MSD values, and Alpha values.
+  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.png：A twin plot containing the MSD fitting curve and the α evolution trajectory.
 
 ### Step 7: src/密度分区计算.py
 
-* ​**功能**​：​**多尺度交通热点识别与高密度空间网格化分析**​。
+* ​**function**​：​**Multi-scale Traffic Hotspot Identification and High-Density Spatial Grid Analysis**​。
   
-  * ​**精细化网格映射**​：利用 transbigdata 库将地理坐标映射为高精度地理网格（默认精度 40m），实现从连续坐标到离散空间单元的转化。
-  * ​**空间密度测算**​：统计每个网格单元内的轨迹点位频数，并基于分位数（Quantile）动态设定密度阈值，自动剥离低频背景噪声，锁定城市交通高负荷区域。
-  * ​**地理信息可视化**​：集成 GeoPandas 绘制空间分布热力图，通过分级色彩（Quantiles Scheme）展现不同尺度群体（小/中/大Rg​ ）在城市空间中的占用特性。
-  * ​**分区结果导出**​：保存高密度区域的轨迹索引，为后期量子游走算法在不同密度分布下的参数标定提供空间权重参考。
+  * ​**Fine-grained grid mapping**​：Using the transbigdata library, the geographical coordinates are mapped to high-precision geographic grids (with the default accuracy of 40m), achieving the conversion from continuous coordinates to discrete spatial units.
+  * ​**Space density measurement**​：Count the frequency of trajectory points in each grid cell, and dynamically set the density threshold based on quantiles to automatically remove low-frequency background noise and identify the high-load areas of urban traffic.
+  * ​**geographic information visualization**​：Integrate GeoPandas to draw a spatial distribution heat map, and present the occupancy characteristics of different scale groups (small/middle/large Rg) in the urban space through graded colors (Quantiles Scheme).
+  * ​**Export of zoning results**​：Save the trajectory index of the high-density areas, providing spatial weight references for the parameter calibration of the subsequent quantum walk algorithm under different density distributions.
 
-#### 📊 空间分布结果展示 (以罗马数据为例)
+#### 📊 Spatial distribution results presentation (Take the data from Rome as an example)
 
-| 聚类尺度 1 (短途) 空间分布                                               | 聚类尺度 2 (长途) 空间分布                                               |
+| Clustering scale 1 (short distance) spatial distribution                                               | Clustering scale 2 (long-distance) spatial distribution                                              |
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | ![alt text](results/分组情况/聚类1/聚类1轨迹空间分布图.png) | ![alt text](results/分组情况/聚类2/聚类2轨迹空间分布图.png) |
 
-* ​**输入**​：data/分类后数据/ 目录下的多尺度轨迹数据集。
-* ​**输出**​：在 data/密度分析结果/ 目录下生成：
+* ​**import**​：data/分类后数据/ The multi-scale trajectory dataset under the directory.
+* ​**output**​：在 data/密度分析结果/ Generated under the directory:
   
-  * \*轨迹空间分布.csv：记录了每个网格的坐标、点数及所属密度等级。
-  * \*轨迹空间分布图.png：基于地理底图的网格化交通密度分布图。
+  * \*轨迹空间分布.csv：It records the coordinates, the number of points, and the corresponding density level for each grid.
+  * \*轨迹空间分布图.png：Grid-based traffic density distribution map based on geographic base map.
 
 ### Step 8: src/构建road_graph.py
 
-* **功能**：**基于轨迹密度的路网矢量重建与拓扑图结构（Graph）生成**。
+* **function**：**Vector reconstruction of road network and generation of topological graph structure based on trajectory density**。
   
-  * **路网矢量化提取**：利用 ArcGIS 对 Step 7 生成的网格轨迹密度进行对数标准化处理，通过“文件转点”及矢量化工具提取道路基本骨架，并进行合理化连接与简化，生成 `.shp` 格式的道路矢量文件。
-  * **坐标系自动投影**：系统根据路网质心自动识别所属的 **UTM 投影带**（如 EPSG:32633），将地理经纬度坐标转换为米制单位，确保物理长度计算（length_m）的精确性。
-  * **拓扑融合与清理**：利用 `unary_union` 算子对提取的零散线段进行拓扑合并，修复断头路与重叠线段，并自动调用 `make_valid` 纠正几何拓扑错误，确保路网的连通性。
-  * **图论关系映射与细分**：根据研究区面积自动调整边长阈值（300m-5000m）对长路段进行插值分割；同时自动提取所有交叉口为 **节点（Nodes）** 并建立 **边（Edges）** 的拓扑映射表，构建完整的数学图模型。
+  * **Vectorization extraction of road network**：Using ArcGIS, the grid trajectory density generated by Step 7 was log-standardized. The basic road skeleton was extracted through "File to Points" and vectorization tools, and then connected and simplified reasonably to generate a road vector file in the `.shp` format.
+  * **Automatic coordinate system projection**：The system automatically identifies the **UTM projection zone** to which it belongs based on the road network's center of mass (such as EPSG:32633), and converts the geographic latitude and longitude coordinates into metric units to ensure the accuracy of the physical length calculation (length_m).
+  * **Topological fusion and cleaning**：Use the `unary_union` operator to perform topological merging on the extracted scattered line segments, fix the disconnected roads and overlapping line segments, and automatically call `make_valid` to correct geometric topological errors, ensuring the connectivity of the road network.
+  * **Graph theory relationship mapping and subdivision**：Based on the area of the research region, the edge length threshold (300m - 5000m) is automatically adjusted to perform interpolation segmentation for long sections; at the same time, all intersections are automatically extracted as **nodes (Nodes)** and a topology mapping table of **edges (Edges)** is established to build a complete mathematical graph model.
 
-#### 🗺️ 路网提取与图结构重建展示
+#### 🗺️ Road network extraction and graph structure reconstruction display
 
-| 轨迹密度与矢量骨架 | 拓扑图结构生成  |
+| Trajectory density and vector skeleton | Topology graph structure generation  |
 | --------------------------------------------- | ------------------------------------------------------------------------------- |
 | ![alt text](results/分组情况/聚类1/聚类01路网预览图.png) | ![alt text](results/分组情况/聚类1/聚类1路网预览图.png) |
 
-* **输入**：
-  * `data/密度分析结果/` 目录下的轨迹空间分布 CSV。
-  * 基于轨迹密度手动提取生成的 `.shp` 道路矢量文件。
-* **输出**：在 `data/密度分析结果/[城市]/道路网络/` 目录下生成：
-  * `road_nodes.csv`：记录所有路口节点的全局唯一 ID 及投影坐标。
-  * `road_edges.csv`：包含起始节点、物理长度及几何拓扑信息的边缘索引表。
+* **import**：
+  * `data/密度分析结果/` The CSV file of the trajectory space distribution in the directory.
+  * Manually extract the generated `.shp` vector file of roads based on the trajectory density.
+* **output**：在 `data/密度分析结果/[城市]/道路网络/` Generated under the directory:
+  * `road_nodes.csv`：Record the global unique ID and projection coordinates of all intersection nodes.
+  * `road_edges.csv`：An edge index table that includes the starting node, physical length, and geometric topology information.
 
 ### Step 9: src/智能游走量子拟合.py
 
-* ​**功能**​：​**基于连续时间量子游走 (CTQW) 的交通流演化模拟与物理参数回归**​。
+* ​**function**​：​**Traffic flow evolution simulation based on continuous-time quantum walk (CTQW) and physical parameter regression**​。
   
-  * ​**谱分解加速算法 (Spectral Acceleration)​**​：通过对路网拉普拉斯/邻接矩阵进行特征值分解，将量子态演化的计算复杂度从O(N3)降低至 O(N2)
-    。利用特征空间投影避免了高频的矩阵指数运算，大幅提升了大规模路网（ N>1000）的模拟效率。
-  * ​**智能起点搜索 (Smart Scout)​**​：结合交通枢纽性（Degree Centrality）、几何中心性（Geometric Center）以及网格采样技术，自动寻找最能代表城市交通发源地的量子游走初始节点。
-  * ​**多阶段前向回归 (Multi-stage Fitting)​**​：
-    
-    * ​**粗扫阶段**​：在宽幅范围内寻找耦合常数γ的初步区间。
-    * ​**精拟合阶段**​：通过双层梯度迭代，精确锁定使模拟 MSD 与真实 MSD 损失函数最小化的物理参数。
-  * ​**物理一致性验证**​：同时拟合均方位移 (MSD) 与扩散指数α(t)
-    ，确保模拟过程不仅在空间扩张速度上对齐，且在扩散相变行为上与真实交通流保持物理一致。
-
-#### ⚛️ 量子模拟与真实数据对比展示α(t)
+  * ​**Spectral decomposition acceleration algorithm (Spectral Acceleration)​**​：By performing eigenvalue decomposition on the Laplacian/adjacency matrix of the road network, the computational complexity of quantum state evolution is reduced from O(N³) to O(N²). 。 By using feature space projection, high-frequency matrix exponential operations are avoided, significantly improving the simulation efficiency for large-scale road networks (with N > 1000).
+  * ​**Intelligent Start Search (Smart Scout)​**​：By combining the degree centrality, geometric center, and grid sampling techniques, the system automatically identifies the initial node of the quantum walk that best represents the origin of urban transportation.
+  * ​**Multistage Forward Regression (Multi-stage Fitting)​**​：
+    * ​**The rough scanning stage**​：Search for the initial range of the coupling constant γ within a wide range.
+    * ​**The precise fitting stage**​：By using double-layer gradient iteration, the physical parameters that precisely minimize the loss function between the simulated MSD and the real MSD are accurately determined.
+  * ​**Physical consistency verification**​：Simultaneously fit the mean square displacement (MSD) and the diffusion index α(t)
+    ，Ensure that the simulation process is not only aligned in terms of the rate of spatial expansion, but also physically consistent with the real traffic flow in terms of the diffusion phase transition behavior.
+#### ⚛️ Quantum simulation is compared with real data to display α(t)
 
 对齐验证
 
-|![alt text](results/分组情况/聚类1/聚类1量子MSD变化以及扩散指数α图.png)| (注：虚线为量子模拟结果，圆点为观测数据) |
+|![alt text](results/分组情况/聚类1/聚类1量子MSD变化以及扩散指数α图.png)| (Note: The dotted lines represent the quantum simulation results, and the dots represent the observed data.) |
 | - | - |
 
-* ​**输入**​：
-* data/群体 msd 分析结果/：真实交通流的动力学统计特征。
-* data/路网结构拓扑构建/：Step 9 生成的标准路网图结构。
-* ​**输出**​：在 data/量子游走前向回归结果/ 目录下生成：
+* ​**import**​：
+* data/群体 msd 分析结果/：The dynamic statistical characteristics of real traffic flow.
+* data/路网结构拓扑构建/：Step 9 The generated standard road network structure.
+* ​**output**​：在 data/量子游走前向回归结果/ Generated under the directory:
   
-  * \*量子 MSD 变化以及扩散指数 α 图.csv：量子模拟与真实轨迹的对比数据表。
-  * \*量子 MSD 变化以及扩散指数 α 图.png：包含γ 拟合值、R2评分及相变区间覆盖的可视化报告。
+  * \*量子 MSD 变化以及扩散指数 α 图.csv：Comparison data table between quantum simulation and actual trajectory.
+  * \*量子 MSD 变化以及扩散指数 α 图.png：A visual report including the γ fitting value, R2 score, and the coverage of the phase transition interval.
 
-### 注：Step 10（第1步之后可直接运行下面代码进行一步化处理，中间需要经过道路网络的手动提取）
+### infuse：Step 10（After the first step, you can directly run the following code for one-step processing. During this process, manual extraction of the road network is required.）
 
 ```
 python src/运行主程序.py
 ```
 
-## 📖 使用指南
+## 📖 operating guide
 
-### 1. 环境准备
+### 1. Environmental Preparation
 
-建议使用 Python 3.9+ 环境。首先克隆仓库并安装依赖：
+It is recommended to use a Python 3.9+ environment. First, clone the repository and install the dependencies:
 
-### 2. 运行模拟
+### 2. Run the simulation
 
-进入项目根目录，按顺序执行代码：
+Enter the project root directory and execute the code in sequence:
 
 ---
 
-## 📝 注意事项
+## 📝 matters need attention
 
-* ​**路径依赖**​：请确保在项目根目录下运行脚本，脚本内部使用相对路径。
-* ​**内存占用**​：量子矩阵演化可能消耗较多内存，建议在 16GB RAM 以上环境运行。
+* ​**path dependence**​：Make sure to run the script in the root directory of the project, and use relative paths within the script.
+* ​**memory usage**​：The quantum matrix evolution process may consume a considerable amount of memory. It is recommended to run it in an environment with at least 16GB of RAM.
 
-## 🤝 帮助与支持
+## 🤝 Help and Support
 
-* ​**项目维护**​：[你的名字]
-* ​**联系邮箱**​：[你的邮箱地址]
+* ​**Project maintenance**​：[你的名字]
+* ​**contact via mail**​：[你的邮箱地址]
 
 
-## 数据下载与使用说明 (Data Description)
+## Data Description
 
-由于本项目涉及的原始轨迹数据及生成的中间结果文件较大（单个文件超过 100MB），无法直接上传至 GitHub 仓库。为了保证代码能够正常运行，请按照以下步骤获取数据：
+Due to the large size of the original trajectory data and the generated intermediate result files (each file exceeding 100MB) involved in this project, they cannot be directly uploaded to the GitHub repository. To ensure the code can run properly, please follow the steps below to obtain the data:
 
-1. **下载数据**：
-   - 链接: [百度网盘下载地址](https://pan.baidu.com/s/1OBOrfi-s4tZMMxY10EX2NA?pwd=4hmd)
-   - 提取码: `4hmd`
+1. **Download data**：
+   - link: [Download address of Baidu Netdisk](https://pan.baidu.com/s/1OBOrfi-s4tZMMxY10EX2NA?pwd=4hmd)
+   - code: `4hmd`
 
 
