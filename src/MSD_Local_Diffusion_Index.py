@@ -163,12 +163,12 @@ def analyze_single_file(file_path, output_dir):
 # -----------------------------------------------------------------------------------
 def run_step_3_msd_analysis(city_name):
     """
-    只需调用此函数并传入城市名，即可自动执行对应的 MSD 分析
+    只需调用此函数并传入city名，即可自动执行对应的 MSD 分析
     """
-    INPUT_FOLDER = os.path.join('data', '清洗分割后数据', city_name)
-    OUTPUT_FOLDER = os.path.join('data', '群体msd分析结果', city_name)
+    INPUT_FOLDER = os.path.join('data', 'Cleaning_data_after_segmentation', city_name)
+    OUTPUT_FOLDER = os.path.join('data', 'Group_MSD_analysis_results', city_name)
     
-    print(f"\n[Step 3] MSD分析启动 | 城市: {city_name}")
+    print(f"\n[Step 3] MSD分析启动 | city: {city_name}")
     if not os.path.exists(INPUT_FOLDER):
         print(f"❌ 找不到输入目录: {INPUT_FOLDER}")
         return

@@ -103,7 +103,7 @@ def process_single_density_analysis(file_path, input_root, output_root):
     top_traj = df.merge(high_density_grids[['LONCOL', 'LATCOL']], on=['LONCOL', 'LATCOL'], how='inner')
     
     # 保存结果
-    csv_save_name = f"{cluster_label}轨迹空间分布.csv"
+    csv_save_name = f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution.csv"
     top_traj.to_csv(os.path.join(curr_output_dir, csv_save_name), index=False, encoding='utf-8-sig')
 
     # 绘图逻辑 (保持不变)
@@ -117,10 +117,10 @@ def process_single_density_analysis(file_path, input_root, output_root):
         k=7, legend=True, edgecolor='none', alpha=0.9,
         legend_kwds={'loc': 'lower right', 'fmt': '{:.0f}'}
     )
-    ax.set_title(f"{cluster_label}轨迹空间分布 ({ACCURACY}m网格)", fontsize=14)
+    ax.set_title(f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution ({ACCURACY}m网格)", fontsize=14)
     ax.axis('off')
     
-    img_save_name = f"{cluster_label}轨迹空间分布图.png"
+    img_save_name = f"{cluster_label}Cluster_1_Trajectory_Spatial_Distribution_Map.png"
     plt.savefig(os.path.join(curr_output_dir, img_save_name), bbox_inches='tight', dpi=300)
     plt.close(fig)
     return True
@@ -130,14 +130,14 @@ def process_single_density_analysis(file_path, input_root, output_root):
 # ------------------------------------------------------------------------------
 def run_step_4_grid_density(city_name):
     """
-    一键运行指定城市的网格密度分析
+    一键运行指定city的网格密度分析
     """
     # 这里输入是 Step 2 的输出 (分类后的 CSV)
-    INPUT_ROOT = os.path.join('data', '分类后数据', city_name)
-    # 输出到指定的密度分析结果目录
-    OUTPUT_ROOT = os.path.join('data', '密度分析结果', city_name)
+    INPUT_ROOT = os.path.join('data', 'Classified_data', city_name)
+    # 输出到指定的Density_analysis_results目录
+    OUTPUT_ROOT = os.path.join('data', 'Density_analysis_results', city_name)
     
-    print(f"\n[Step 4] 空间密度分析启动 | 城市: {city_name}")
+    print(f"\n[Step 4] 空间密度分析启动 | city: {city_name}")
     if not os.path.exists(INPUT_ROOT):
         print(f"❌ 找不到输入目录: {INPUT_ROOT}")
         return

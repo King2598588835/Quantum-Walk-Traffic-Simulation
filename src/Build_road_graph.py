@@ -134,14 +134,14 @@ def process_single_topology(file_path, input_root, output_root):
 # ------------------------------------------------------------------------------
 def run_step_5_topology_building(city_name):
     """
-    一键构建指定城市路网的拓扑结构
+    一键构建指定city路网的拓扑结构
     """
     # 这里输入是 Step 4 的输出结果
-    INPUT_ROOT = os.path.join('data', '密度分析结果', city_name, "道路网络") 
+    INPUT_ROOT = os.path.join('data', 'Density_analysis_results', city_name, "road_network") 
     # 这里输出是 Step 5 的拓扑文件
-    OUTPUT_ROOT = os.path.join('data', '路网结构拓扑构建', city_name) 
+    OUTPUT_ROOT = os.path.join('data', 'Construction_of_road_network_structure_topology', city_name) 
     
-    print(f"\n[Step 5] 路网拓扑构建启动 | 城市: {city_name}")
+    print(f"\n[Step 5] 路网拓扑构建启动 | city: {city_name}")
     if not os.path.exists(INPUT_ROOT):
         print(f"❌ 找不到输入目录: {INPUT_ROOT}")
         return

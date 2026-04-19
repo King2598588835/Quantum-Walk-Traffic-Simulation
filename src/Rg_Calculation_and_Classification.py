@@ -99,7 +99,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         if rg_df.empty:
             raise ValueError("❌ 未能计算出有效的 Rg 值")
 
-        rg_df.to_csv(os.path.join(file_output_folder, "回转半径汇总.csv"), index=False, encoding='utf-8-sig')
+        rg_df.to_csv(os.path.join(file_output_folder, "Summary_Turning_Radius.csv"), index=False, encoding='utf-8-sig')
         
         # 4. 肘部法则 (绘图逻辑不变)
         X = rg_df[['Rg']].values
@@ -119,7 +119,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         plt.ylabel('簇内平方和 (Inertia)')
         plt.title(f'肘部法则 - {file_name}')
         plt.grid(True, alpha=0.3)
-        plt.savefig(os.path.join(file_output_folder, "肘部法则分析图.png"), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(file_output_folder, "Elbow_Rule_Analysis_Diagram.png"), dpi=150, bbox_inches='tight')
         plt.close()
         
         # 5. 执行聚类 (K-means 逻辑不变)
@@ -131,7 +131,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         cluster_mapping = {old: new for new, old in enumerate(cluster_mean_rg.index)}
         rg_df['cluster_ordered'] = rg_df['cluster'].map(cluster_mapping)
         
-        rg_df.to_csv(os.path.join(file_output_folder, "聚类标签结果.csv"), index=False, encoding='utf-8-sig')
+        rg_df.to_csv(os.path.join(file_output_folder, "Cluster_label_results.csv"), index=False, encoding='utf-8-sig')
         
         # 6. 拆分并保存轨迹数据 (中文文件名)
         data_with_cluster = data.merge(rg_df[['id', 'cluster_ordered']], on='id', how='left')
@@ -151,7 +151,7 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
         plt.yscale('log')
         plt.ylabel('回转半径 $R_g$ (米) - 对数坐标')
         plt.title(f'回转半径分布 - {file_name}')
-        plt.savefig(os.path.join(file_output_folder, "回转半径分布图.png"), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(file_output_folder, "Radius_distribution_map.png"), dpi=150, bbox_inches='tight')
         plt.close()
         
         return True
@@ -165,12 +165,12 @@ def process_file_for_rg_clustering(file_path, output_folder, k=3):
 # -------------------------------
 def run_step_1_rg_clustering(city_name):
     """
-    一键运行指定城市的回转半径计算与聚类
+    一键运行指定city的回转半径计算与聚类
     """
-    INPUT_FOLDER = os.path.join('data', '原始数据处理后', city_name)
-    OUTPUT_FOLDER = os.path.join('data', '分类后数据', city_name)
+    INPUT_FOLDER = os.path.join('data', 'AfterProcessing', city_name)
+    OUTPUT_FOLDER = os.path.join('data', 'Classified_data', city_name)
 
-    print(f"\n[Step 2] 回转半径分析启动 | 城市: {city_name}")
+    print(f"\n[Step 2] 回转半径分析启动 | city: {city_name}")
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
     
     csv_files = glob.glob(os.path.join(INPUT_FOLDER, "*.csv"))

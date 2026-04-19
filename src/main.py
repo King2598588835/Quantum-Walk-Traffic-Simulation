@@ -14,12 +14,12 @@ os.chdir(BASE_DIR)
 
 # --- 导入各模块函数 ---
 try:
-    from Rg计算与分类 import run_step_1_rg_clustering
-    from 轨迹处理 import run_step_2_cleaning
-    from MSD局部扩散指数 import run_step_3_msd_analysis
-    from 密度分区计算 import run_step_4_grid_density
-    from 构建road_graph import run_step_5_topology_building
-    from 智能游走量子拟合 import run_quantum_solver
+    from Rg_Calculation_and_Classification import run_step_1_rg_clustering
+    from Trajectory_processing import run_step_2_cleaning
+    from MSD_Local_Diffusion_Index import run_step_3_msd_analysis
+    from Density_zoning_calculation import run_step_4_grid_density
+    from Build_road_graph import run_step_5_topology_building
+    from Intelligent_roaming_quantum_fitting import run_quantum_solver
 except ImportError as e:
     print(f"❌ 导入模块失败: {e}")
     print("请确保所有脚本文件都在 src/ 目录下，且文件名与 import 语句一致。")
@@ -53,8 +53,8 @@ def run_full_pipeline(city):
         print(f"错误位置: {e}")
 
 if __name__ == "__main__":
-    # --- 待处理城市列表 ---
-    cities_to_process = ["罗马数据"] 
+    # --- 待处理city列表 ---
+    cities_to_process = ["Roman_data"] 
     
     for city in cities_to_process:
         run_full_pipeline(city)

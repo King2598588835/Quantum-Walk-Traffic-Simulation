@@ -42,7 +42,7 @@ plt.rcParams['axes.unicode_minus'] = False
 # ==============================================================================
 
 def extract_cluster_id(filename):
-    """从文件名提取 '聚类1' """
+    """从文件名提取 'Cluster_1' """
     match = re.search(r'(聚类\d+)', filename)
     return match.group(1) if match else None
 
@@ -357,16 +357,16 @@ def process_single_cluster(csv_file, topo_folder, output_folder):
 def run_quantum_solver(dataset_name):
     """
     🔥 核心主入口函数 🔥
-    参数: dataset_name (str) -> 例如 "罗马数据"
+    参数: dataset_name (str) -> 例如 "Roman_data"
     """
     print(f"\n{'='*60}")
     print(f"🚀 启动量子求解器 (加速版) | 数据集: {dataset_name}")
     print(f"{'='*60}\n")
     
     # 1. 构建一级路径
-    base_real = os.path.join(r'data', '群体msd分析结果', dataset_name)
-    base_topo = os.path.join(r'data', '路网结构拓扑构建', dataset_name)
-    base_out  = os.path.join(r'data',  '量子游走前向回归结果', dataset_name)
+    base_real = os.path.join(r'data', 'Group_MSD_analysis_results', dataset_name)
+    base_topo = os.path.join(r'data', 'Construction_of_road_network_structure_topology', dataset_name)
+    base_out  = os.path.join(r'data',  'forward_regression_result_quantum_walk', dataset_name)
     
     if not os.path.exists(base_real):
         print(f"❌ 错误：找不到数据目录 {base_real}")

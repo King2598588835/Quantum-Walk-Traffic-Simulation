@@ -27,7 +27,7 @@ This project is an automated data processing and analysis workflow for the appli
 
 Please run the scripts in the src/ directory in sequence to complete the entire analysis process:
 
-### Step 1: src/轨迹预处理与简化.py
+### Step 1: src/Trajectory_preprocessing_and_simplification.py
 
 * ​**function**​：​**Standardization and Compression Cleaning of Multi-source Trajectory Data**​。
   
@@ -38,7 +38,7 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 * ​**import**​：The original TXT or CSV files located in the "data/Original Data/" directory.
 * ​**output**​：The normalized \*\_cleaned.csv file located in the "data" directory after the original data has been processed.
 
-### Step 2: src/总体数据统计.py
+### Step 2: src/Overall_data_statistics.py
 
 * ​**function**​：​**Advanced noise reduction, trajectory segmentation and temporal-spatial feature extraction**​。
   
@@ -46,10 +46,10 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
   * ​**Dynamical denoising**​：Set a physical speed limit (150 km/h), and filter out non-logical trajectories such as teleportation and waypoints by using vectorized displacement calculations.
   * ​**Logical segmentation and smoothing**​：The trajectories of the data with long-term persistence are segmented, and the sliding window algorithm (Rolling Mean) is applied to smooth out the positioning errors and eliminate signal jitter.
   * ​**Duration and point count filtering**​：Automatically eliminate trajectories that are exceptionally long (exceeding 3 hours) or have too sparse recording points, to ensure the continuity of the modeling data.
-* ​**import**​：data/原始数据处理后/ The cleaned CSV file under the directory。
-* ​**output**​：data/总体数据统计/ High-quality research-grade trajectory data under the directory。
+* ​**import**​：data/AfterProcessing/ The cleaned CSV file under the directory。
+* ​**output**​：data/Overall_data_statistics/ High-quality research-grade trajectory data under the directory。
 
-### Step 3: src/总体统计绘制.py
+### Step 3: src/Overall_statistics_charting.py
 
 * ​**function**​：​**Multidimensional Time-Space Statistical Analysis and Visualization of Diffusion Phase Transition**​。
   
@@ -57,20 +57,20 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
   * ​**MSD omnidirectional displacement analysis**​：Calculate the mean squared displacement (Mean Squared Displacement) at different time steps (Δt), and reveal the spatial diffusion rate of the individual.
   * **Extraction of diffusion phase transition index**：Using the Savitzky-Golay filter to smooth the logarithmic curve and calculate the gradient, dynamically identify whether the trajectory is in the "sub-diffusion", "normal diffusion" or "super-diffusion" state.
   * ​**Strict truncation mechanism**​：It incorporates the "bottom rebound" and "zero-point truncation" logic, automatically identifying and discarding data intervals with invalid physical meanings, ensuring the scientific rigor of the diffusion feature analysis.
-* ​**import**​：data/总体数据统计/ The cleaned CSV files under the directory.
-* ​**output**​：在 data/总体数据统计/ The following creates a folder with the same name for each file, which contains:
+* ​**import**​：data/Overall_data_statistics/ The cleaned CSV files under the directory.
+* ​**output**​：in data/Overall_data_statistics/ The following creates a folder with the same name for each file, which contains:
   
-  * \*\_基础分布统计.png：Macro-statistics Four-in-One Chart.
-  * \*\_扩散相变分析.png：MSD and α index evolution diagram.
+  * \*\_Basic_distribution_statistics.png：Macro-statistics Four-in-One Chart.
+  * \*\_Analysis_of_diffusion_phase_transformation.png：MSD and α index evolution diagram.
   * \*\_msd\_result\_full.csv & \*\_vis.csv：The complete original data for diffusion analysis and the truncated data.
 
 #### 📊 results display (Take the data from Rome as an example)
 
 | Basic Distribution Chart                                      | Diffusion phase transformation analysis diagram                                       |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| ![alt text](results/整体情况/基本统计情况图.png) | ![alt text](results/整体情况/整体轨迹的MSD变化以及扩散指数α图.png)|
+| ![alt text](results/overall_situation/Basic_statistical_chart.png) | ![alt text](results/overall_situation/MSD_changes.png)|
 
-### Step 4: src/Rg计算与分类.py
+### Step 4: src/Rg_Calculation_and_Classification.py
 
 * ​**function**​：**Individual mobility measurement and multi-scale classification (analysis of turning radius Rg)**。
   
@@ -83,31 +83,31 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 
 | Elbow rule analysis (determining the K value)                                        | Radius of curvature distribution (classification result)                                         |
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| ![alt text](results/肘部法则分析图.png)| ![alt text](results/回转半径分布图.png) |
+| ![alt text](results/Elbow_Rule_Analysis_Diagram.png)| ![alt text](results/Radius_distribution_map.png) |
 
-* ​**import**​：data/原始数据处理后/ The cleaned trajectory CSV file under the directory.
-* ​**output**​：在 data/分类后数据/ Generated under the directory:
+* ​**import**​：data/AfterProcessing/ The cleaned trajectory CSV file under the directory.
+* ​**output**​：在 data/Classified_data/ Generated under the directory:
   
   * Cluster [1,2,3] Trajectory Data.csv: Independent datasets after splitting by movement scale.
-  * 回转半径汇总.csv & 聚类标签结果.csv：Detailed statistical and classification label correspondence table.
+  * Summary_Turning_Radius.csv & Cluster_label_results.csv：Detailed statistical and classification label correspondence table.
 
-### Step 5: src/轨迹处理.py
+### Step 5: src/Trajectory_processing.py
 
 * ​**function**​：​**Second-order physical fine-tuning and dynamic segmentation of multi-scale subsets**​。
   
   * ​**Detailed classification and cleaning**​：For the "small/middle/large" scale datasets classified in Step 4, conduct targeted physical logic verification.
   * ​**Dynamic time segmentation**​：Set the threshold at 30 minutes. Automatically identify and segment the long-stationary points in the trajectory, and split a single long trajectory into "sub-trajectory segments" with continuous movement characteristics, in order to meet the assumption of the stable process of quantum walking.
   * ​**Dynamics smoothing**​：Apply the sliding window smoothing algorithm to correct GPS positioning jitter and improve the geometric quality of the trajectory.
-  * ​**Recursive structure preservation**​：Automatic traversal data/分类后数据/ Navigate through all the city subfolders and maintain the original classification directory structure, achieving fully automatic batch processing.
+  * ​**Recursive structure preservation**​：Automatic traversal data/Classified_data/ Navigate through all the city subfolders and maintain the original classification directory structure, achieving fully automatic batch processing.
 * ​**key parameter**​：
   
   * MAX\_SPEED\_KMH = 150：Eliminate the instantaneous movement points that are beyond the realm of physical common sense.
   * MAX\_TIME\_GAP\_MIN = 30：If there is no displacement for more than 30 minutes, a new trajectory will be created.
   * MIN\_POINTS = 5：Ensure that each sample for analysis has sufficient statistical significance.
-* ​**import**​：data/分类后数据/ Various scale trajectory CSV files under the directory.
-* ​**output**​：在 data/清洗分割后数据/ Generate a refined dataset with the same name in the directory, and the file name will be automatically changed to \*\_轨迹处理数据.csv。
+* ​**import**​：data/Classified_data/ Various scale trajectory CSV files under the directory.
+* ​**output**​：在 data/Cleaning_data_after_segmentation/ Generate a refined dataset with the same name in the directory, and the file name will be automatically changed to \*\_Trajectory_processing数据.csv。
 
-### Step 6: src/MSD局部扩散指数.py
+### Step 6: src/MSD_Local_Diffusion_Index.py
 
 * ​**function**​：**Modeling of collective diffusion characteristics and analysis of local α-index**。
   
@@ -118,15 +118,15 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 
 #### 📊 Display of diffusion characteristics results( α(t)Exponential evolution )
 
-![alt text](results/分组情况/聚类1/聚类1轨迹的MSD变化以及扩散指数α以及量子模拟结果.png)
+![alt text](results/grouping_situation/Cluster_1/changes_in_MSD_of_the_clustering1_trajectory,_ results.png)
 
-* ​**import**​：data/清洗分割后数据/ The refined trajectory data under the directory.
-* ​**output**​：in data/群体 msd 分析结果/ The contents below are for generating a separate file for each cluster.
+* ​**import**​：data/Cleaning_data_after_segmentation/ The refined trajectory data under the directory.
+* ​**output**​：in data/Group_MSD_analysis_results/ The contents below are for generating a separate file for each cluster.
   
-  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.csv：Structured data including time intervals, mean MSD values, and Alpha values.
-  * \*轨迹的 MSD 变化以及扩散指数 α 以及量子模拟结果.png：A twin plot containing the MSD fitting curve and the α evolution trajectory.
+  * \*changes_in_MSD_of_the_clustering1_trajectory,_ results.csv：Structured data including time intervals, mean MSD values, and Alpha values.
+  * \*changes_in_MSD_of_the_clustering1_trajectory,_ results.png：A twin plot containing the MSD fitting curve and the α evolution trajectory.
 
-### Step 7: src/密度分区计算.py
+### Step 7: src/Density_zoning_calculation.py
 
 * ​**function**​：​**Multi-scale Traffic Hotspot Identification and High-Density Spatial Grid Analysis**​。
   
@@ -139,15 +139,15 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 
 | Clustering scale 1 (short distance) spatial distribution                                               | Clustering scale 2 (long-distance) spatial distribution                                              |
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| ![alt text](results/分组情况/聚类1/聚类1轨迹空间分布图.png) | ![alt text](results/分组情况/聚类2/聚类2轨迹空间分布图.png) |
+| ![alt text](results/grouping_situation/Cluster_1/Cluster_1_Trajectory_Spatial_Distribution_Map.png) | ![alt text](results/grouping_situation/Cluster_2/Cluster_2_Trajectory_Spatial_Distribution_Map.png) |
 
-* ​**import**​：data/分类后数据/ The multi-scale trajectory dataset under the directory.
-* ​**output**​：在 data/密度分析结果/ Generated under the directory:
+* ​**import**​：data/Classified_data/ The multi-scale trajectory dataset under the directory.
+* ​**output**​：在 data/Density_analysis_results/ Generated under the directory:
   
-  * \*轨迹空间分布.csv：It records the coordinates, the number of points, and the corresponding density level for each grid.
-  * \*轨迹空间分布图.png：Grid-based traffic density distribution map based on geographic base map.
+  * \*Cluster_1_Trajectory_Spatial_Distribution.csv：It records the coordinates, the number of points, and the corresponding density level for each grid.
+  * \*Cluster_1_Trajectory_Spatial_Distribution_Map.png：Grid-based traffic density distribution map based on geographic base map.
 
-### Step 8: src/构建road_graph.py
+### Step 8: src/Build_road_graph.py
 
 * **function**：**Vector reconstruction of road network and generation of topological graph structure based on trajectory density**。
   
@@ -160,16 +160,16 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 
 | Trajectory density and vector skeleton | Topology graph structure generation  |
 | --------------------------------------------- | ------------------------------------------------------------------------------- |
-| ![alt text](results/分组情况/聚类1/聚类01路网预览图.png) | ![alt text](results/分组情况/聚类1/聚类1路网预览图.png) |
+| ![alt text](results/grouping_situation/Cluster_1/Cluster01_Road_Network_Preview_Map.png) | ![alt text](results/grouping_situation/Cluster_1/Cluster1_Road_Network_Preview_Map.png) |
 
 * **import**：
-  * `data/密度分析结果/` The CSV file of the trajectory space distribution in the directory.
+  * `data/Density_analysis_results/` The CSV file of the trajectory space distribution in the directory.
   * Manually extract the generated `.shp` vector file of roads based on the trajectory density.
-* **output**：在 `data/密度分析结果/[城市]/道路网络/` Generated under the directory:
+* **output**：在 `data/Density_analysis_results/[city]/road_network/` Generated under the directory:
   * `road_nodes.csv`：Record the global unique ID and projection coordinates of all intersection nodes.
   * `road_edges.csv`：An edge index table that includes the starting node, physical length, and geometric topology information.
 
-### Step 9: src/智能游走量子拟合.py
+### Step 9: src/Intelligent_roaming_quantum_fitting.py
 
 * ​**function**​：​**Traffic flow evolution simulation based on continuous-time quantum walk (CTQW) and physical parameter regression**​。
   
@@ -184,21 +184,21 @@ Please run the scripts in the src/ directory in sequence to complete the entire 
 
 对齐验证
 
-|![alt text](results/分组情况/聚类1/聚类1量子MSD变化以及扩散指数α图.png)| (Note: The dotted lines represent the quantum simulation results, and the dots represent the observed data.) |
+|![alt text](results/grouping_situation/Cluster_1/Cluster1_quantum_MSD_changes_and_diffusion_index_α_graph.png)| (Note: The dotted lines represent the quantum simulation results, and the dots represent the observed data.) |
 | - | - |
 
 * ​**import**​：
-* data/群体 msd 分析结果/：The dynamic statistical characteristics of real traffic flow.
-* data/路网结构拓扑构建/：Step 9 The generated standard road network structure.
-* ​**output**​：在 data/量子游走前向回归结果/ Generated under the directory:
+* data/Group_MSD_analysis_results/：The dynamic statistical characteristics of real traffic flow.
+* data/Construction_of_road_network_structure_topology/：Step 9 The generated standard road network structure.
+* ​**output**​：在 data/forward_regression_result_quantum_walk/ Generated under the directory:
   
-  * \*量子 MSD 变化以及扩散指数 α 图.csv：Comparison data table between quantum simulation and actual trajectory.
-  * \*量子 MSD 变化以及扩散指数 α 图.png：A visual report including the γ fitting value, R2 score, and the coverage of the phase transition interval.
+  * \*Cluster1_quantum_MSD_changes_and_diffusion_index_α_graph.csv：Comparison data table between quantum simulation and actual trajectory.
+  * \*Cluster1_quantum_MSD_changes_and_diffusion_index_α_graph.png：A visual report including the γ fitting value, R2 score, and the coverage of the phase transition interval.
 
 ### infuse：Step 10（After the first step, you can directly run the following code for one-step processing. During this process, manual extraction of the road network is required.）
 
 ```
-python src/运行主程序.py
+python src/main.py
 ```
 
 ## 📖 operating guide

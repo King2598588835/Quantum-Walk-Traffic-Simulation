@@ -24,7 +24,7 @@ plt.rcParams['axes.unicode_minus'] = False
 # 🔧 参数配置区
 # ===================================================================================
 # 输入文件夹：上一步分类后的数据
-INPUT_FOLDER = r'清洗分割后数据\SZ其他出行数据\guang'
+INPUT_FOLDER = r'Cleaning_data_after_segmentation\SZ其他出行数据\guang'
 
 # 输出文件夹：你要的目标路径
 OUTPUT_FOLDER = r'个体MSD分析结果\SZ其他出行数据'

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Jan 24 2026
-Description: 全自动适配版清洗脚本（自动识别城市范围 + 自动识别列名）
-Input: 原始数据处理后\杭州市网约车数据
-Output: 总体数据统计\杭州市网约车数据
+Description: 全自动适配版清洗脚本（自动识别city范围 + 自动识别列名）
+Input: AfterProcessing\杭州市网约车数据
+Output: Overall_data_statistics\杭州市网约车数据
 """
 import pandas as pd
 import numpy as np
@@ -19,11 +19,11 @@ warnings.filterwarnings('ignore')
 # 🔧 参数配置区
 # ==============================================================================
 # 路径配置
-INPUT_FOLDER = r'data\原始数据处理后\罗马数据'
-OUTPUT_FOLDER = r'data\总体数据统计\罗马数据'
+INPUT_FOLDER = r'data\AfterProcessing\Roman_data'
+OUTPUT_FOLDER = r'data\Overall_data_statistics\Roman_data'
 
 # 1. 空间范围过滤 (改为自动模式)
-# True: 自动根据数据分布计算边界，剔除极个别离群点 (适用于任何城市)
+# True: 自动根据数据分布计算边界，剔除极个别离群点 (适用于任何city)
 # False: 不过滤空间范围 (不建议，因为会有 (0,0) 坐标噪点)
 AUTO_BBOX = True 
 
@@ -81,7 +81,7 @@ def auto_standardize_columns(df):
 def filter_by_auto_bbox(df):
     """
     自动计算边界：保留经纬度在 0.1% 到 99.9% 分位数之间的数据
-    这能有效去除 (0,0) 噪点，同时自动适应任何城市
+    这能有效去除 (0,0) 噪点，同时自动适应任何city
     """
     if df.empty: return df
     
@@ -89,8 +89,8 @@ def filter_by_auto_bbox(df):
     min_lon, max_lon = df['lon'].quantile(0.001), df['lon'].quantile(0.999)
     min_lat, max_lat = df['lat'].quantile(0.001), df['lat'].quantile(0.999)
     
-    # 打印自动识别到的范围 (方便你确认是不是在正确的城市)
-    print(f"  🌍 自动锁定城市范围: Lon[{min_lon:.3f}, {max_lon:.3f}], Lat[{min_lat:.3f}, {max_lat:.3f}]")
+    # 打印自动识别到的范围 (方便你确认是不是在正确的city)
+    print(f"  🌍 自动锁定city范围: Lon[{min_lon:.3f}, {max_lon:.3f}], Lat[{min_lat:.3f}, {max_lat:.3f}]")
     
     original_len = len(df)
     df = df[
@@ -208,7 +208,7 @@ def process_single_file(file_path, output_path):
     
     stats = {'duration_filtered': 0, 'short_filtered': 0}
     
-    # 5. 逐轨迹处理
+    # 5. 逐Trajectory_processing
     for uid in tqdm(unique_ids, desc="  清洗进度", unit="traj"):
         traj = df[df['id'] == uid]
         if len(traj) < MIN_POINTS: continue

@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 # ==============================================================================
 # 🔧 参数配置区
 # ==============================================================================
-INPUT_FOLDER = r'清洗分割后数据\SZ其他出行数据\guang'
+INPUT_FOLDER = r'Cleaning_data_after_segmentation\SZ其他出行数据\guang'
 OUTPUT_FOLDER = r'统计分布图表\SZ其他出行数据\分图合集'
 
 # 过滤前 0.5% 的极值

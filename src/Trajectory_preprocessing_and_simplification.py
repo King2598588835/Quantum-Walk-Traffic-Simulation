@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 科研轨迹数据处理万能版
-1. 支持罗马数据格式 (.txt, POINT坐标, mixed时间)
+1. 支持Roman_data格式 (.txt, POINT坐标, mixed时间)
 2. 支持国内常见格式 (杭州、厦门、车牌号等 CSV)
 3. 包含轨迹预处理、去噪、轨迹简化 (DP算法)
 """
@@ -31,12 +31,12 @@ def smart_load_data(file_path):
     # --- 逻辑 A: 处理罗马格式 (.txt 或包含特定特征) ---
     if ext == '.txt':
         try:
-            print(f"  识别为文本格式，尝试按罗马数据规范解析...")
+            print(f"  识别为文本格式，尝试按Roman_data规范解析...")
             # 罗马格式：分号分隔，无表头
             df = pd.read_csv(file_path, sep=';', header=None, names=['id', 'time', 'geo'])
             
             if 'geo' in df.columns and df['geo'].str.contains('POINT', na=False).any():
-                print("  ✨ 确认罗马数据特征: 解析 POINT 坐标...")
+                print("  ✨ 确认Roman_data特征: 解析 POINT 坐标...")
                 # 解析 POINT(41.88 12.48)
                 temp_geo = df['geo'].str.replace('POINT(', '', regex=False).str.replace(')', '', regex=False)
                 coords = temp_geo.str.split(' ', expand=True)
@@ -93,7 +93,7 @@ def standardize_columns(df):
     return df, False
 
 # =============================================================================
-# 2. 轨迹处理核心函数 (保持逻辑不变)
+# 2. Trajectory_processing核心函数 (保持逻辑不变)
 # =============================================================================
 
 def preprocess_trajectory(df, id_col='id', time_col='time', lat_col='lat', lon_col='lon',
@@ -222,8 +222,8 @@ if __name__ == "__main__":
     # --- 配置区 ---
     # 这里可以放任何格式的文件 (Rome的txt, 厦门的csv, 杭州的csv)
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    INPUT_DIR = os.path.join(BASE_DIR, "data", "原始数据","罗马数据")
-    OUTPUT_DIR = os.path.join(BASE_DIR, "data", "原始数据处理后", "罗马数据")
+    INPUT_DIR = os.path.join(BASE_DIR, "data", "original_data","Roman_data")
+    OUTPUT_DIR = os.path.join(BASE_DIR, "data", "AfterProcessing", "Roman_data")
 
     files = glob.glob(os.path.join(INPUT_DIR, "*.*")) # 读取所有后缀文件
     print(f"📂 找到 {len(files)} 个文件")

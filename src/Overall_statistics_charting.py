@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jan 24 2026
-Description: 
-1. 绘制基础分布统计图 (四合一)
-2. 绘制扩散相变分析图 (双拼，严格截断，纯净版，增加触及0截断)
-3. 输出: 为每个CSV文件创建同名文件夹，并在其中保存 图片 x2, 数据CSV x3
+
 """
 
 import pandas as pd
@@ -25,8 +21,8 @@ warnings.filterwarnings('ignore')
 # 🔧 参数配置区
 # ==============================================================================
 # 输入和输出的根目录保持一致
-INPUT_FOLDER = r'data\总体数据统计\罗马数据'
-OUTPUT_ROOT_FOLDER = r'data\总体数据统计\罗马数据'
+INPUT_FOLDER = r'data\Overall_data_statistics\Roman_data'
+OUTPUT_ROOT_FOLDER = r'data\Overall_data_statistics\Roman_data'
 
 # 图表参数
 FIG_SIZE_DIST = (20, 15)  # 基础分布图尺寸
@@ -159,7 +155,7 @@ def plot_basic_distribution(df, file_basename, output_dir):
     
     plt.suptitle(f"基础统计分布概览: {file_basename}", fontsize=22, y=1.02, fontname=FONT_NAME)
     plt.tight_layout()
-    save_path = os.path.join(output_dir, f"{file_basename}_基础分布统计.png")
+    save_path = os.path.join(output_dir, f"{file_basename}_Basic_distribution_statistics.png")
     plt.savefig(save_path, dpi=DPI, bbox_inches='tight')
     plt.close()
     print(f"  ✅ [图1] 基础分布图已保存")
@@ -242,7 +238,7 @@ def strict_rebound_cutoff(t, msd, alpha):
     return t[:cutoff_idx], msd[:cutoff_idx], alpha[:cutoff_idx], reason, cutoff_idx
 
 def plot_vis_result(t, msd, alpha, file_basename, output_dir):
-    """生成图2: 扩散相变分析"""
+    """生成图2: Analysis_of_diffusion_phase_transformation"""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIG_SIZE_MSD)
 
     # 左图 MSD
@@ -274,7 +270,7 @@ def plot_vis_result(t, msd, alpha, file_basename, output_dir):
     ax2.grid(True, which="both", linestyle='--', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f"{file_basename}_扩散相变分析.png"), dpi=DPI, bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, f"{file_basename}_Analysis_of_diffusion_phase_transformation.png"), dpi=DPI, bbox_inches='tight')
     plt.close()
 
 # ==============================================================================
@@ -344,7 +340,7 @@ if __name__ == "__main__":
                     if "msd_result" not in f and "cutoff_log" not in f and "calc_result" not in f]
     
     if not target_files:
-        print(f"❌ 在 '{INPUT_FOLDER}' 未找到原始数据CSV文件")
+        print(f"❌ 在 '{INPUT_FOLDER}' 未找到original_dataCSV文件")
     else:
         print(f"🚀 开始处理 {len(target_files)} 个文件...")
         for f in tqdm(target_files):

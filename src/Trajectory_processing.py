@@ -128,7 +128,7 @@ def process_single_file(file_path, input_root, output_root):
     if not cleaned_segments: return
     
     final_df = pd.concat(cleaned_segments)
-    save_filename = f"{file_base.replace('轨迹数据', '轨迹处理数据')}.csv" if "轨迹数据" in file_base else f"{file_base}_处理数据.csv"
+    save_filename = f"{file_base.replace('轨迹数据', 'Trajectory_processing数据')}.csv" if "轨迹数据" in file_base else f"{file_base}_处理数据.csv"
     save_path = os.path.join(target_output_dir, save_filename)
     
     cols_to_keep = ['id', 'time', 'lat', 'lon']
@@ -140,12 +140,12 @@ def process_single_file(file_path, input_root, output_root):
 # ------------------------------------------------------------------------------
 def run_step_2_cleaning(city_name):
     """
-    只需调用此函数并传入城市名，即可执行对应文件夹的清洗任务
+    只需调用此函数并传入city名，即可执行对应文件夹的清洗任务
     """
-    INPUT_FOLDER = r'data\分类后数据\{}'.format(city_name)
-    OUTPUT_FOLDER = r'data\清洗分割后数据\{}'.format(city_name)
+    INPUT_FOLDER = r'data\Classified_data\{}'.format(city_name)
+    OUTPUT_FOLDER = r'data\Cleaning_data_after_segmentation\{}'.format(city_name)
     
-    print(f"\n物理清洗任务启动 | 城市: {city_name}")
+    print(f"\n物理清洗任务启动 | city: {city_name}")
     if not os.path.exists(INPUT_FOLDER):
         print(f"❌ 找不到输入目录: {INPUT_FOLDER}")
         return
